@@ -36,7 +36,11 @@ authRouter.post("/signup", async (req, res) => {
         const token = jwt.sign({_id: user._id}, process.env.TOKEN_KEY,{
                 expiresIn: "1d"
             })
-        res.cookie("token", token)
+        res.cookie("token", token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "None",  // This is required for cross-origin cookies
+        })
 
         res.json({
             message: "successfully signed up",
@@ -69,7 +73,11 @@ authRouter.post("/login", async (req,res) => {
             const token = jwt.sign({_id: user._id}, process.env.TOKEN_KEY,{
                 expiresIn: "1d"
             })
-            res.cookie("token", token)
+            res.cookie("token", token, {
+            httpOnly: true,
+            secure: true,
+            sameSite: "None",  // This is required for cross-origin cookies
+            })
 
             res.send(user)
         }else{
