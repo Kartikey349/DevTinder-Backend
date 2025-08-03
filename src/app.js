@@ -8,7 +8,9 @@ require("dotenv").config();
 const app = express();
 
 const corsOptions = {
-  origin: "https://dev-tinder-frontend-five.vercel.app/",
+  origin:[ 
+    "http://localhost:5173",
+    "https://dev-tinder-frontend-zeta.vercel.app"],
   credentials: true,
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"]
