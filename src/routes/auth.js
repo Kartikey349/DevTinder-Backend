@@ -90,7 +90,11 @@ authRouter.post("/login", async (req,res) => {
 })
 
 authRouter.post("/logout", async(req, res) => {
-    res.cookie("token", null, {
+    res.cookie("token", null, { 
+        httpOnly: true,
+        secure: true,
+        sameSite: "None",
+        path: "/",
         expires: new Date(Date.now())
     })
 
