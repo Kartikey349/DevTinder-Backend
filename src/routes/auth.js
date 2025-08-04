@@ -34,12 +34,14 @@ authRouter.post("/signup", async (req, res) => {
         const savedUser = await user.save();
 
         const token = jwt.sign({_id: user._id}, process.env.TOKEN_KEY,{
-                expiresIn: "1d"
+                expiresIn: "1h"
             })
         res.cookie("token", token, {
         httpOnly: true,
         secure: true,
-        sameSite: "None",  // This is required for cross-origin cookies
+        sameSite: "None",
+        path: "/",
+        maxAge: 1000 * 60 * 60,
         })
 
         res.json({
@@ -63,7 +65,7 @@ authRouter.post("/login", async (req,res) => {
         const user = await User.findOne({emailId: emailId});
 
         if(!user){
-            res.status(404).send("user not found");
+            return res.status(404).send("user not found");
         }
 
         const isPasswordValid = await bcrypt.compare(password, user.password);
@@ -74,9 +76,11 @@ authRouter.post("/login", async (req,res) => {
                 expiresIn: "1d"
             })
             res.cookie("token", token, {
-            httpOnly: true,
-            secure: true,
-            sameSite: "None",  // This is required for cross-origin cookies
+                httpOnly: true,
+                secure: true,
+                sameSite: "None",  
+                path: "/",
+                maxAge: 1000 * 60 * 60,
             })
 
             res.send(user)
