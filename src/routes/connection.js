@@ -1,5 +1,6 @@
 const express = require("express")
 const connectionRouter = express.Router();
+const sendMail  = require("../utils/sendMail")
 
 const userAuth = require("../middleware/auth")
 const ConnectionRequest = require("../models/connectionRequest");
@@ -42,6 +43,7 @@ connectionRouter.post("/request/send/:status/:userId", userAuth,async(req, res) 
             throw new Error("Connection request already exist")
         }
 
+
         const connectionRequest = new ConnectionRequest({
             fromUserId,
             toUserId,
@@ -50,7 +52,17 @@ connectionRouter.post("/request/send/:status/:userId", userAuth,async(req, res) 
 
         await connectionRequest.save()
 
-        res.send(req.user.firstName + " sent connection request successfully to " + toUser.firstName)
+        if(status === "interested"){
+            const result = await sendMail({
+            to: "kartikey7518@gmail.com",
+            subject: `${req.user.firstName} wants to connect on DevTinder!`,
+            text: `Hi ${toUser.firstName}, ${req.user.firstName} has sent you a connection request.`,
+        })
+        }
+
+        
+        res.send({messgae : req.user.firstName + " sent connection request successfully to " + toUser.firstName})
+
     }catch(err){
         res.status(400).send("ERROR: "+ err.message)
     }
@@ -91,5 +103,14 @@ connectionRouter.post("/request/review/:status/:requestId", userAuth, async(req,
     }
 })
 
+connectionRouter.get("/test-email", async (req, res) => {
+  const result = await sendMail({
+    to: "kartikey7518@gmail.com",
+    subject: "Test Email",
+    text: "Hello from DevTinder!",
+  });
+
+  res.send(result);
+});
 
 module.exports = connectionRouter;
