@@ -9,6 +9,7 @@ const app = express();
 
 const corsOptions = {
   origin:[ 
+    "https://devtinder-frontend-bp31.onrender.com/",
     "http://localhost:5173",
     "https://dev-tinder-frontend-zeta.vercel.app"],
   credentials: true,
@@ -17,9 +18,6 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-
-// ✅ Preflight (OPTIONS) handler
-// app.options("*", cors(corsOptions)); // this is safe — won't crash
 
 
 app.use(express.json())
