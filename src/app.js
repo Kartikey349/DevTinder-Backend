@@ -4,6 +4,7 @@ const cookieParser = require("cookie-parser")
 const cors = require("cors")
 
 require("dotenv").config();
+require("./utils/cron-job")
 
 const app = express();
 
