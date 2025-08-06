@@ -7,10 +7,15 @@ const secureRoomId = (loggedInId, targetId) => {
 
 const initializeSocket = (server) => {
     const io = socket(server, {
-        cors: [
-    "http://localhost:5173",
-    "https://dev-tinder-frontend-zeta.vercel.app"],
-    })
+    cors: {
+        origin: [
+        "http://localhost:5173",
+        "https://dev-tinder-frontend-zeta.vercel.app"
+        ],
+    methods: ["GET", "POST"],
+    credentials: true
+  }
+});
 
 
     io.on("connection", (socket) => {
