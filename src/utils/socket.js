@@ -18,11 +18,10 @@ const initializeSocket = (server) => {
         socket.on("joinChat", ({loggedInId, targetId}) => {
             const room = secureRoomId(loggedInId, targetId)
             socket.join(room);
-            console.log(room)
         })
 
         socket.on("sendMessage", ({firstName, targetId, senderId, text}) => {
-            const room = secureRoomId(loggedInId, targetId)
+            const room = secureRoomId(senderId, targetId)
             io.to(room).emit("receivedMessage", {firstName, text, senderId})
         })
 
