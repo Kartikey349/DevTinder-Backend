@@ -2,6 +2,7 @@ const express = require("express");
 const connectDb = require("./config/database")
 const cookieParser = require("cookie-parser")
 const cors = require("cors")
+const http = require("http");
 
 require("dotenv").config();
 require("./utils/cron-job")
@@ -26,7 +27,8 @@ app.use(cookieParser())
 const authRouter = require("./routes/auth")
 const profileRouter = require("./routes/profile")
 const connectionRouter = require("./routes/connection")
-const userRouter = require("./routes/user")
+const userRouter = require("./routes/user");
+const initializeSocket = require("./utils/socket");
 
 
 app.use("/", authRouter)
@@ -35,10 +37,14 @@ app.use("/", connectionRouter)
 app.use("/", userRouter)
 
 
+const server =  http.createServer(app);
+initializeSocket(server);
+
+
 
 connectDb().then(() => {
     console.log("succesfully connected to Database");
-    app.listen(7000, () => {
+    server.listen(7000, () => {
         console.log("successfully listening to port 7000")
     })
 }).catch(err => console.error("database cannot be connected"))
