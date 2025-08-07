@@ -6,6 +6,8 @@ const secureRoomId = (loggedInId, targetId) => {
     return crypto.createHash("sha256").update([loggedInId, targetId].sort().join("_")).digest("hex");
 }
 
+const userOnline = {}
+
 const initializeSocket = (server) => {
     const io = socket(server, {
     cors: {
@@ -53,8 +55,23 @@ const initializeSocket = (server) => {
             }
         })
 
-        socket.on("disconnect", () => {
+        socket.on("online", ({loggedInId}) => {
+            userOnline[loggedInId] = socket.id;
+        })
 
+        socket.on("checkOnline", ({targetId}) => {
+            const status = userOnline[targetId]
+            socket.emit("result", {targetId, status})
+        })
+
+        socket.on("disconnect", () => {
+            // userOnline[loggedInId] = "offline"
+            for (const userId in userOnline) {
+            if (userOnline[userId] === socket.id) {
+            delete userOnline[userId];
+            break;
+    }
+  }
         })
 
     })    
